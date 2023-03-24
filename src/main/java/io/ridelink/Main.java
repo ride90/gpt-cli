@@ -17,7 +17,7 @@ class Main {
         }
 
         try {
-            gptClient.getCompletion("Whatever");
+            gptClient.getCompletion("How to see all python processes?");
         } catch (IOException | GPTCliException e) {
             System.out.println(e);
         }
