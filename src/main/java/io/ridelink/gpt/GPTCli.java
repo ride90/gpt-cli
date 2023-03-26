@@ -58,7 +58,7 @@ public final class GPTCli {
         final URL requestUrl = new URL(GPTCli.COMPLETIONS_ENDPOINT_URL);
         HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
         connection.setConnectTimeout(6000);
-        connection.setReadTimeout(12000);
+        connection.setReadTimeout(60000);
         connection.setInstanceFollowRedirects(false);
         // Set method & headers.
         connection.setRequestMethod("POST");
