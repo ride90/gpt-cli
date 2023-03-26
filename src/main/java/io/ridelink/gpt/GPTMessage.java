@@ -39,7 +39,7 @@ class GPTMessage {
         } else if (isWindows()) {
             return "PowerShell";
         }
-        throw new GPTMessageException("Shell was not detected.");
+        throw new GPTMessageException("Shell was not detected. Ensure yours $SHELL env var is set.");
     }
 
 }
