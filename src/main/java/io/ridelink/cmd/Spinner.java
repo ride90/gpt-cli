@@ -1,6 +1,6 @@
-package io.ridelink.gpt;
+package io.ridelink.cmd;
 
-public class Spinner extends Thread {
+class Spinner extends Thread {
 
     private final static String[] FRAMES = {"⢎⡰", "⢎⡡", "⢎⡑", "⢎⠱", "⠎⡱", "⢊⡱", "⢌⡱", "⢆⡱"};
     private final static int FPS = 8;
