@@ -14,37 +14,25 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 
-// https://platform.openai.com/docs/api-reference/completions/create
 public final class GPTCli {
     private final String openaiApiKey;
-    private final Float temperature;
     private final static float TEMPERATURE_DEFAULT = 1F;
     private final static String COMPLETIONS_ENDPOINT_URL = "https://api.openai.com/v1/chat/completions";
     private final static String MODEL = "gpt-3.5-turbo";
-    private final static double TOP_PROBABILITY_MASS = 1;
+    private final static float TOP_PROBABILITY_MASS = 1F;
     private final static int N = 1;
     private final static boolean STREAM = false;
 
-    public GPTCli(String openaiApiKey, Float temperature) throws GPTCliException {
-
+    public GPTCli(String openaiApiKey) throws GPTCliException {
         this.openaiApiKey = openaiApiKey;
-        this.temperature = temperature != null ? temperature : GPTCli.TEMPERATURE_DEFAULT;
-        if (this.temperature < 0 || this.temperature > 2) {
-            throw new GPTCliParamException(
-                    String.format(
-                            "%s is not allowed value for temperature. Allowed value is between 0 and 2.",
-                            this.temperature
-                    )
-            );
-        }
     }
 
-    public String getCompletion(String question) throws IOException, GPTMessageException {
+    public String getCompletion(String question, Float temperature) throws IOException, GPTMessageException {
         // Get configured connection.
         final HttpURLConnection connection = this.getConnection();
         // Write json body.
         connection.getOutputStream().write(
-                this.getRequestBody(question).getBytes(StandardCharsets.UTF_8)
+                this.getRequestBody(question, temperature).getBytes(StandardCharsets.UTF_8)
         );
         // Send request & read response.
         JSONObject respBodyJson = new JSONObject(this.getResponseBody(connection));
@@ -69,10 +57,10 @@ public final class GPTCli {
         return connection;
     }
 
-    private String getRequestBody(String question) throws GPTMessageException {
+    private String getRequestBody(String question, Float temperature) throws GPTMessageException {
         JSONObject jsonObjectBody = new JSONObject();
         jsonObjectBody.put("model", GPTCli.MODEL);
-        jsonObjectBody.put("temperature", this.temperature);
+        jsonObjectBody.put("temperature", temperature);
         jsonObjectBody.put("n", GPTCli.N);
         jsonObjectBody.put("top_p", GPTCli.TOP_PROBABILITY_MASS);
         jsonObjectBody.put("stream", GPTCli.STREAM);
@@ -102,4 +90,15 @@ public final class GPTCli {
         return stringBuffer.toString();
     }
 
+    private void validateTemperature(Float temperature) throws GPTCliParamException {
+        temperature = temperature != null ? temperature : GPTCli.TEMPERATURE_DEFAULT;
+        if (temperature < 0 || temperature > 2) {
+            throw new GPTCliParamException(
+                    String.format(
+                            "%s is not allowed value for temperature. Allowed value is between 0 and 2.",
+                            temperature
+                    )
+            );
+        }
+    }
 }
