@@ -1,8 +1,10 @@
 package io.ridelink.gpt;
 
+import io.ridelink.gpt.exception.GPTMessageException;
+
 class GPTMessage {
-    private GPTMessage() {
-    }
+    private GPTMessage() {}
+
 
     public static String build(String question) throws GPTMessageException {
         return """
