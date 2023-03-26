@@ -1,6 +1,7 @@
 package io.ridelink.cmd;
 
 import io.ridelink.gpt.GPTCli;
+import io.ridelink.gpt.Spinner;
 import io.ridelink.gpt.exception.GPTCliException;
 import io.ridelink.gpt.exception.GPTCliParamException;
 import io.ridelink.gpt.exception.GPTMessageException;
@@ -42,6 +43,8 @@ public class CompletionCommand extends BaseCommand implements Callable<Integer> 
         }
         // Hit API and get an answer.
         final String answer;
+        Spinner spinner = new Spinner();
+        spinner.start();
         try {
             answer = gptClient.getCompletion(this.question, this.temperature);
         } catch (GPTCliParamException | GPTMessageException e) {
@@ -50,6 +53,8 @@ public class CompletionCommand extends BaseCommand implements Callable<Integer> 
         } catch (IOException e) {
             this.stdErr(e.getMessage());
             return CommandLine.ExitCode.SOFTWARE;
+        } finally {
+            spinner.stopSpinner();
         }
         this.stdInfo(answer);
         return CommandLine.ExitCode.OK;
