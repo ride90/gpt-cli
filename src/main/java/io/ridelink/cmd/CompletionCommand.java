@@ -7,7 +7,6 @@ import io.ridelink.gpt.exception.GPTMessageException;
 import picocli.CommandLine;
 
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.concurrent.Callable;
 
 @CommandLine.Command

@@ -3,9 +3,9 @@ package io.ridelink.gpt;
 import io.ridelink.gpt.exception.GPTMessageException;
 
 class GPTMessage {
+
     private GPTMessage() {
     }
-
 
     public static String prepareExecutable(String question) throws GPTMessageException {
         return """
@@ -52,5 +52,4 @@ class GPTMessage {
         }
         throw new GPTMessageException("Shell was not detected. Ensure yours $SHELL env var is set.");
     }
-
 }

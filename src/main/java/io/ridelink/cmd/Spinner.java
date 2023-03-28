@@ -40,6 +40,4 @@ class Spinner extends Thread {
             }
         }
     }
-
-
 }

@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 
 
 public final class GPTCli {
+
     private final String openaiApiKey;
     private final static float TEMPERATURE_DEFAULT = 1F;
     private final static String COMPLETIONS_ENDPOINT_URL = "https://api.openai.com/v1/chat/completions";
@@ -27,7 +28,8 @@ public final class GPTCli {
         this.openaiApiKey = openaiApiKey;
     }
 
-    public String getCompletion(String question, Float temperature, boolean isGeneral) throws IOException, GPTMessageException {
+    public String getCompletion(String question, Float temperature, boolean isGeneral) throws IOException,
+            GPTMessageException {
         // Get configured connection.
         final HttpURLConnection connection = this.getConnection();
         // Write json body.
@@ -69,7 +71,8 @@ public final class GPTCli {
         JSONObject jsonObjectMessage = new JSONObject();
         jsonObjectMessage.put("role", "user");
         // Get prepared message for GPT and set it to the body.
-        String preparedQuestion = isGeneral ? GPTMessage.prepareGeneral(question) : GPTMessage.prepareExecutable(question);
+        String preparedQuestion = isGeneral ? GPTMessage.prepareGeneral(question) :
+                GPTMessage.prepareExecutable(question);
         jsonObjectMessage.put("content", preparedQuestion);
         jsonArrayMessages.put(jsonObjectMessage);
         jsonObjectBody.put("messages", jsonArrayMessages);
