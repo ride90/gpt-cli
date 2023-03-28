@@ -27,12 +27,12 @@ public final class GPTCli {
         this.openaiApiKey = openaiApiKey;
     }
 
-    public String getCompletion(String question, Float temperature) throws IOException, GPTMessageException {
+    public String getCompletion(String question, Float temperature, boolean isGeneral) throws IOException, GPTMessageException {
         // Get configured connection.
         final HttpURLConnection connection = this.getConnection();
         // Write json body.
         connection.getOutputStream().write(
-                this.getRequestBody(question, temperature).getBytes(StandardCharsets.UTF_8)
+                this.getRequestBody(question, temperature, isGeneral).getBytes(StandardCharsets.UTF_8)
         );
         // Send request & read response.
         JSONObject respBodyJson = new JSONObject(this.getResponseBody(connection));
@@ -57,7 +57,7 @@ public final class GPTCli {
         return connection;
     }
 
-    private String getRequestBody(String question, Float temperature) throws GPTMessageException {
+    private String getRequestBody(String question, Float temperature, boolean isGeneral) throws GPTMessageException {
         JSONObject jsonObjectBody = new JSONObject();
         jsonObjectBody.put("model", GPTCli.MODEL);
         jsonObjectBody.put("temperature", temperature);
@@ -68,8 +68,9 @@ public final class GPTCli {
         JSONArray jsonArrayMessages = new JSONArray();
         JSONObject jsonObjectMessage = new JSONObject();
         jsonObjectMessage.put("role", "user");
-        // Get prepared message for GPT.
-        jsonObjectMessage.put("content", GPTMessage.build(question));
+        // Get prepared message for GPT and set it to the body.
+        String preparedQuestion = isGeneral ? GPTMessage.prepareGeneral(question) : GPTMessage.prepareExecutable(question);
+        jsonObjectMessage.put("content", preparedQuestion);
         jsonArrayMessages.put(jsonObjectMessage);
         jsonObjectBody.put("messages", jsonArrayMessages);
         // Convert string to bytes.

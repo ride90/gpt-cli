@@ -24,6 +24,14 @@ public class CompletionCommand extends BaseCommand implements Callable<Integer> 
     )
     private Float temperature;
 
+    @CommandLine.Option(
+            names = {"-g", "--general"},
+            defaultValue = "false",
+            description = "Used in case you want to mark your question as general. It means you can ask anything. " +
+                    "Default is ${DEFAULT-VALUE}."
+    )
+    private boolean isGeneral;
+
     @Override
     public Integer call() throws Exception {
         // Ensure we have OPENAI_API_KEY env var set.
@@ -45,7 +53,7 @@ public class CompletionCommand extends BaseCommand implements Callable<Integer> 
         Spinner spinner = new Spinner();
         spinner.start();
         try {
-            answer = gptClient.getCompletion(this.question, this.temperature);
+            answer = gptClient.getCompletion(this.question, this.temperature, this.isGeneral);
         } catch (GPTCliParamException | GPTMessageException e) {
             this.stdWarn(e.getMessage());
             return CommandLine.ExitCode.USAGE;

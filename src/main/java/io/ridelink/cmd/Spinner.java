@@ -3,7 +3,7 @@ package io.ridelink.cmd;
 class Spinner extends Thread {
 
     private final static String[] FRAMES = {"⢎⡰", "⢎⡡", "⢎⡑", "⢎⠱", "⠎⡱", "⢊⡱", "⢌⡱", "⢆⡱"};
-    private final static int FPS = 8;
+    private final static int FPS = 23;
     private boolean showSpinner = true;
 
     public void stopSpinner() {
