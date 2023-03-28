@@ -31,4 +31,11 @@ class BaseCommand {
                 Ansi.AUTO.string("@|bold,blue " + x + "|@")
         );
     }
+
+    protected void stdMagenta(String x) {
+        // TODO: Implement ANSI colors in case of Windows.
+        System.out.println(
+                Ansi.AUTO.string("@|bold,magenta " + x + "|@")
+        );
+    }
 }

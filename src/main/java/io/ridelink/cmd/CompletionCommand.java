@@ -7,6 +7,7 @@ import io.ridelink.gpt.exception.GPTMessageException;
 import picocli.CommandLine;
 
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.concurrent.Callable;
 
 @CommandLine.Command
@@ -63,7 +64,14 @@ public class CompletionCommand extends BaseCommand implements Callable<Integer> 
         } finally {
             spinner.stopSpinner();
         }
-        this.stdInfo(answer);
+        // Interactive dialog.
+        if (!this.isGeneral) {
+            this.stdMagenta("Command suggestion:\n");
+            this.stdInfo(answer);
+        } else {
+            this.stdMagenta("Reply:\n");
+            this.stdInfo(answer);
+        }
         return CommandLine.ExitCode.OK;
     }
 }
