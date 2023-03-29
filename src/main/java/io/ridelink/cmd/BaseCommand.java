@@ -2,7 +2,11 @@ package io.ridelink.cmd;
 
 import picocli.CommandLine.Help.Ansi;
 
-class BaseCommand {
+public class BaseCommand {
+
+    public String getEnv(String name) {
+        return System.getenv(name);
+    }
 
     protected void stdWarn(String x) {
         // TODO: Implement ANSI colors in case of Windows.

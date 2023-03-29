@@ -35,25 +35,19 @@ public class CompletionCommand extends BaseCommand implements Callable<Integer> 
     @Override
     public Integer call() throws Exception {
         // Ensure we have OPENAI_API_KEY env var set.
-        String openaiApiKey = System.getenv("OPENAI_API_KEY");
+        String openaiApiKey = this.getEnv("OPENAI_API_KEY");
         if (openaiApiKey == null) {
             this.stdWarn("OPENAI_API_KEY is not set!");
             return CommandLine.ExitCode.USAGE;
         }
         // Init GPT client.
-        final GPTCli gptClient;
-        try {
-            gptClient = new GPTCli(openaiApiKey);
-        } catch (GPTCliException e) {
-            this.stdErr(e.getMessage());
-            return CommandLine.ExitCode.SOFTWARE;
-        }
-        // Hit API and get an answer.
-        final String answer;
+        final GPTCli gptClient = new GPTCli(openaiApiKey);
+        // Hit API and get a reply.
+        final String reply;
         Spinner spinner = new Spinner();
         spinner.start();
         try {
-            answer = gptClient.getCompletion(this.question, this.temperature, this.isGeneral);
+            reply = gptClient.getCompletion(this.question, this.temperature, this.isGeneral);
         } catch (GPTCliParamException | GPTMessageException e) {
             this.stdWarn(e.getMessage());
             return CommandLine.ExitCode.USAGE;
@@ -66,10 +60,10 @@ public class CompletionCommand extends BaseCommand implements Callable<Integer> 
         // Interactive dialog.
         if (!this.isGeneral) {
             this.stdMagenta("Command suggestion:\n");
-            this.stdInfo(answer);
+            this.stdInfo(reply);
         } else {
             this.stdMagenta("Reply:\n");
-            this.stdInfo(answer);
+            this.stdInfo(reply);
         }
         return CommandLine.ExitCode.OK;
     }

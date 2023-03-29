@@ -24,7 +24,7 @@ public final class GPTCli {
     private final static int N = 1;
     private final static boolean STREAM = false;
 
-    public GPTCli(String openaiApiKey) throws GPTCliException {
+    public GPTCli(String openaiApiKey) {
         this.openaiApiKey = openaiApiKey;
     }
 
