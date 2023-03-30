@@ -1,7 +1,6 @@
 package io.ridelink.cmd;
 
 import io.ridelink.gpt.GPTCli;
-import io.ridelink.gpt.exception.GPTCliException;
 import io.ridelink.gpt.exception.GPTCliParamException;
 import io.ridelink.gpt.exception.GPTMessageException;
 import picocli.CommandLine;

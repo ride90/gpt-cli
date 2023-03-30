@@ -1,6 +1,5 @@
 package io.ridelink.gpt;
 
-import io.ridelink.gpt.exception.GPTCliException;
 import io.ridelink.gpt.exception.GPTCliParamException;
 import io.ridelink.gpt.exception.GPTMessageException;
 import org.json.JSONArray;
@@ -30,6 +29,9 @@ public final class GPTCli {
 
     public String getCompletion(String question, Float temperature, boolean isGeneral) throws IOException,
             GPTMessageException {
+        // Validate args.
+        GPTCli.validateQuestion(question);
+        GPTCli.validateTemperature(temperature);
         // Get configured connection.
         final HttpURLConnection connection = this.getConnection();
         // Write json body.
@@ -94,12 +96,18 @@ public final class GPTCli {
         return stringBuffer.toString();
     }
 
-    private void validateTemperature(Float temperature) throws GPTCliParamException {
+    private static void validateQuestion(String question) throws GPTCliParamException {
+        if (question == null || question.isBlank()) {
+            throw new GPTCliParamException("Question must be not empty!");
+        }
+    }
+
+    private static void validateTemperature(Float temperature) throws GPTCliParamException {
         temperature = temperature != null ? temperature : GPTCli.TEMPERATURE_DEFAULT;
         if (temperature < 0 || temperature > 2) {
             throw new GPTCliParamException(
                     String.format(
-                            "%s is not allowed value for temperature. Allowed value is between 0 and 2.",
+                            "Temperature with value %s is not allowed. Allowed value is between 0 and 2.",
                             temperature
                     )
             );
