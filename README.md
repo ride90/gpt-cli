@@ -66,6 +66,7 @@ You can find Jet in New Reno by visiting the drugstore in the eastern part of th
 ## Installation
 
 ### 1. Get executable
+- Install Java :(
 - Cet a built **jar** file or build it from **sources** (see [releases](https://github.com/ride90/gpt-cli/releases))
 - _Optional_: alias it in your .bashrc/.zshrc `alias gptc="java -jar /path/to/gpt-cli-0.1.jar"` (or add it to your **PATH**)
 
