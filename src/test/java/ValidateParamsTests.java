@@ -20,7 +20,7 @@ public class ValidateParamsTests extends BaseTest {
     }
 
     @Test
-    @DisplayName("Run command with wrong temperature value.")
+    @DisplayName("Run command with wrong model value.")
     void testWrongModel() {
         Integer exitCode = this.commandLine.execute("List all files as a table", "-m=mmmm");
         assertEquals(2, exitCode);
