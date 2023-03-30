@@ -2,7 +2,11 @@ package io.ridelink.cmd;
 
 import picocli.CommandLine.Help.Ansi;
 
-class BaseCommand {
+public class BaseCommand {
+
+    public String getEnv(String name) {
+        return System.getenv(name);
+    }
 
     protected void stdWarn(String x) {
         // TODO: Implement ANSI colors in case of Windows.
@@ -29,6 +33,13 @@ class BaseCommand {
         // TODO: Implement ANSI colors in case of Windows.
         System.out.println(
                 Ansi.AUTO.string("@|bold,blue " + x + "|@")
+        );
+    }
+
+    protected void stdMagenta(String x) {
+        // TODO: Implement ANSI colors in case of Windows.
+        System.out.println(
+                Ansi.AUTO.string("@|bold,magenta " + x + "|@")
         );
     }
 }

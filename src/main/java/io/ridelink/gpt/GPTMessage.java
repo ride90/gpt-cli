@@ -3,10 +3,11 @@ package io.ridelink.gpt;
 import io.ridelink.gpt.exception.GPTMessageException;
 
 class GPTMessage {
-    private GPTMessage() {}
 
+    private GPTMessage() {
+    }
 
-    public static String build(String question) throws GPTMessageException {
+    public static String prepareExecutable(String question) throws GPTMessageException {
         return """
                 While answering my question, you MUST follow next rules:
                 - Return only a valid code which I can copy and paste into my terminal emulator, and it must work
@@ -22,6 +23,16 @@ class GPTMessage {
                 - the operating system is "%s"
                 Question: %s
                 """.formatted(getShell(), getOS(), question);
+    }
+
+    public static String prepareGeneral(String question) throws GPTMessageException {
+        return """
+                While answering my question, you MUST follow next rules:
+                - Don't add any styling, HTML or markup. Only plaintext!
+                - Your answer will be displayed in terminal emulator, so format it accordingly.
+
+                Question: %s
+                """.formatted(question);
     }
 
     private static String getOS() {
@@ -41,5 +52,4 @@ class GPTMessage {
         }
         throw new GPTMessageException("Shell was not detected. Ensure yours $SHELL env var is set.");
     }
-
 }

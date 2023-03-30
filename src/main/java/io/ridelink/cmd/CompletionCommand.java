@@ -1,8 +1,6 @@
 package io.ridelink.cmd;
 
 import io.ridelink.gpt.GPTCli;
-import io.ridelink.gpt.Spinner;
-import io.ridelink.gpt.exception.GPTCliException;
 import io.ridelink.gpt.exception.GPTCliParamException;
 import io.ridelink.gpt.exception.GPTMessageException;
 import picocli.CommandLine;
@@ -25,28 +23,40 @@ public class CompletionCommand extends BaseCommand implements Callable<Integer> 
     )
     private Float temperature;
 
+    @CommandLine.Option(
+            names = {"-m", "--model"},
+            defaultValue = "gpt-3.5-turbo",
+            description = "ID of the model to use. See the model endpoint compatibility table for details on which " +
+                    "models work with the Chat API " +
+                    "[https://platform.openai.com/docs/models/model-endpoint-compatibility]." +
+                    "Default is ${DEFAULT-VALUE}."
+    )
+    private String model;
+
+    @CommandLine.Option(
+            names = {"-g", "--general"},
+            defaultValue = "false",
+            description = "Used in case you want to mark your question as general. It means you can ask anything. " +
+                    "Default is ${DEFAULT-VALUE}."
+    )
+    private boolean isGeneral;
+
     @Override
     public Integer call() throws Exception {
         // Ensure we have OPENAI_API_KEY env var set.
-        String openaiApiKey = System.getenv("OPENAI_API_KEY");
+        String openaiApiKey = this.getEnv("OPENAI_API_KEY");
         if (openaiApiKey == null) {
             this.stdWarn("OPENAI_API_KEY is not set!");
             return CommandLine.ExitCode.USAGE;
         }
         // Init GPT client.
-        final GPTCli gptClient;
-        try {
-            gptClient = new GPTCli(openaiApiKey);
-        } catch (GPTCliException e) {
-            this.stdErr(e.getMessage());
-            return CommandLine.ExitCode.SOFTWARE;
-        }
-        // Hit API and get an answer.
-        final String answer;
+        final GPTCli gptClient = new GPTCli(openaiApiKey);
+        // Hit API and get a reply.
+        final String reply;
         Spinner spinner = new Spinner();
         spinner.start();
         try {
-            answer = gptClient.getCompletion(this.question, this.temperature);
+            reply = gptClient.getCompletion(this.question, this.temperature, this.isGeneral, this.model);
         } catch (GPTCliParamException | GPTMessageException e) {
             this.stdWarn(e.getMessage());
             return CommandLine.ExitCode.USAGE;
@@ -56,7 +66,14 @@ public class CompletionCommand extends BaseCommand implements Callable<Integer> 
         } finally {
             spinner.stopSpinner();
         }
-        this.stdInfo(answer);
+        // Interactive dialog.
+        if (!this.isGeneral) {
+            this.stdMagenta("Command suggestion:\n");
+            this.stdInfo(reply);
+        } else {
+            this.stdMagenta("Reply:\n");
+            this.stdInfo(reply);
+        }
         return CommandLine.ExitCode.OK;
     }
 }
