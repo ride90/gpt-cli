@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 
 public final class GPTCli {
@@ -18,7 +19,10 @@ public final class GPTCli {
     private final String openaiApiKey;
     private final static float TEMPERATURE_DEFAULT = 1F;
     private final static String COMPLETIONS_ENDPOINT_URL = "https://api.openai.com/v1/chat/completions";
-    private final static String MODEL = "gpt-3.5-turbo";
+    private final static String MODEL_DEFAULT = "gpt-3.5-turbo";
+    private final static String[] MODELS_AVAILABLE = {
+            GPTCli.MODEL_DEFAULT, "gpt-4", "gpt-4-0314", "gpt-4-32k", "gpt-4-32k-0314", "gpt-3.5-turbo-0301"
+    };
     private final static float TOP_PROBABILITY_MASS = 1F;
     private final static int N = 1;
     private final static boolean STREAM = false;
@@ -27,11 +31,12 @@ public final class GPTCli {
         this.openaiApiKey = openaiApiKey;
     }
 
-    public String getCompletion(String question, Float temperature, boolean isGeneral) throws IOException,
+    public String getCompletion(String question, Float temperature, boolean isGeneral, String model) throws IOException,
             GPTMessageException {
         // Validate args.
         GPTCli.validateQuestion(question);
         GPTCli.validateTemperature(temperature);
+        GPTCli.validateModel(model);
         // Get configured connection.
         final HttpURLConnection connection = this.getConnection();
         // Write json body.
@@ -63,7 +68,7 @@ public final class GPTCli {
 
     private String getRequestBody(String question, Float temperature, boolean isGeneral) throws GPTMessageException {
         JSONObject jsonObjectBody = new JSONObject();
-        jsonObjectBody.put("model", GPTCli.MODEL);
+        jsonObjectBody.put("model", GPTCli.MODEL_DEFAULT);
         jsonObjectBody.put("temperature", temperature);
         jsonObjectBody.put("n", GPTCli.N);
         jsonObjectBody.put("top_p", GPTCli.TOP_PROBABILITY_MASS);
@@ -107,8 +112,21 @@ public final class GPTCli {
         if (temperature < 0 || temperature > 2) {
             throw new GPTCliParamException(
                     String.format(
-                            "Temperature with value %s is not allowed. Allowed value is between 0 and 2.",
+                            "Temperature with value '%s' is not allowed. Allowed value is between 0 and 2.",
                             temperature
+                    )
+            );
+        }
+    }
+
+    private static void validateModel(String model) throws GPTCliParamException {
+        if (model == null || model.isBlank()) {
+            throw new GPTCliParamException("Model must be not empty!");
+        } else if (!Arrays.asList(GPTCli.MODELS_AVAILABLE).contains(model)) {
+            throw new GPTCliParamException(
+                    String.format(
+                            "'%s' is not a valid model. Available models: %s",
+                            model, Arrays.toString(GPTCli.MODELS_AVAILABLE)
                     )
             );
         }

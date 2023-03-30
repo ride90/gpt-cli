@@ -24,6 +24,16 @@ public class CompletionCommand extends BaseCommand implements Callable<Integer> 
     private Float temperature;
 
     @CommandLine.Option(
+            names = {"-m", "--model"},
+            defaultValue = "gpt-3.5-turbo",
+            description = "ID of the model to use. See the model endpoint compatibility table for details on which " +
+                    "models work with the Chat API " +
+                    "[https://platform.openai.com/docs/models/model-endpoint-compatibility]." +
+                    "Default is ${DEFAULT-VALUE}."
+    )
+    private String model;
+
+    @CommandLine.Option(
             names = {"-g", "--general"},
             defaultValue = "false",
             description = "Used in case you want to mark your question as general. It means you can ask anything. " +
@@ -46,7 +56,7 @@ public class CompletionCommand extends BaseCommand implements Callable<Integer> 
         Spinner spinner = new Spinner();
         spinner.start();
         try {
-            reply = gptClient.getCompletion(this.question, this.temperature, this.isGeneral);
+            reply = gptClient.getCompletion(this.question, this.temperature, this.isGeneral, this.model);
         } catch (GPTCliParamException | GPTMessageException e) {
             this.stdWarn(e.getMessage());
             return CommandLine.ExitCode.USAGE;
