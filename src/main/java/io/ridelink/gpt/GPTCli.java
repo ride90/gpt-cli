@@ -17,15 +17,16 @@ import java.util.Arrays;
 public final class GPTCli {
 
     private final String openaiApiKey;
-    private final static float TEMPERATURE_DEFAULT = 1F;
-    private final static String COMPLETIONS_ENDPOINT_URL = "https://api.openai.com/v1/chat/completions";
-    private final static String MODEL_DEFAULT = "gpt-3.5-turbo";
-    private final static String[] MODELS_AVAILABLE = {
-            GPTCli.MODEL_DEFAULT, "gpt-4", "gpt-4-0314", "gpt-4-32k", "gpt-4-32k-0314", "gpt-3.5-turbo-0301"
+    private static final float TEMPERATURE_DEFAULT = 1F;
+    private static final String COMPLETIONS_ENDPOINT_URL = "https://api.openai.com/v1/chat/completions";
+    private static final String MODEL_DEFAULT = "gpt-3.5-turbo";
+    private static final String[] MODELS_AVAILABLE = {
+            GPTCli.MODEL_DEFAULT, "gpt-4", "gpt-4-0613", "gpt-4-32k", "gpt-4-32k-0613", "gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613"
     };
-    private final static float TOP_PROBABILITY_MASS = 1F;
-    private final static int N = 1;
-    private final static boolean STREAM = false;
+
+    private static final float TOP_PROBABILITY_MASS = 1F;
+    private static final int N = 1;
+    private static final boolean STREAM = false;
 
     public GPTCli(String openaiApiKey) {
         this.openaiApiKey = openaiApiKey;
@@ -91,7 +92,7 @@ public final class GPTCli {
         final BufferedReader incomingBufferReader = new BufferedReader(
                 new InputStreamReader(connection.getInputStream())
         );
-        final StringBuffer stringBuffer = new StringBuffer();
+        final StringBuilder stringBuffer = new StringBuilder();
         String inputLine;
         while ((inputLine = incomingBufferReader.readLine()) != null) {
             stringBuffer.append(inputLine);
